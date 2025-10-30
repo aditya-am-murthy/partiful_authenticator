@@ -9,6 +9,7 @@ def normalize_name(name):
 def parse_payments(payments_file):
     """Parse payments from payments.txt and return a dict of name -> amount"""
     payments = {}
+    total_payments  = 0.0
     
     with open(payments_file, 'r') as f:
         lines = f.readlines()
@@ -17,6 +18,8 @@ def parse_payments(payments_file):
     # Look for patterns like "Name paid you $X.00" or "Name sent you $X.00"
     # Handle tabs, spaces, and BofA prefix, capture names with multiple words
     for line in lines:
+
+        
         # Strip whitespace including tabs
         line = line.strip()
         if not line:
@@ -32,6 +35,7 @@ def parse_payments(payments_file):
             name = match.group(1).strip()
             amount = float(match.group(2))
             normalized_name = normalize_name(name)
+            total_payments += amount
             if normalized_name in payments:
                 payments[normalized_name] += amount
             else:
@@ -44,13 +48,14 @@ def parse_payments(payments_file):
             name = match.group(1).strip()
             amount = float(match.group(2))
             normalized_name = normalize_name(name)
+            total_payments += amount
             if normalized_name in payments:
                 payments[normalized_name] += amount
             else:
                 payments[normalized_name] = amount
             continue
     
-    return payments
+    return payments, total_payments
 
 def main():
     # Read whitelist
@@ -101,7 +106,7 @@ def main():
                     guest_structure[main_guest_normalized] = []
     
     # Parse payments
-    payments = parse_payments('payments.txt')
+    payments, total_payments = parse_payments('payments.txt')
     
     # Price per guest
     PRICE_PER_GUEST = 5.0
@@ -204,7 +209,8 @@ def main():
         print("  (None)")
     
     print("\n" + "=" * 60)
-
+    print(f"Total payments: ${total_payments:.2f}")
+    print("\n" + "=" * 60)
 if __name__ == "__main__":
     main()
 
