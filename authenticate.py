@@ -57,6 +57,10 @@ def main():
     with open('whitelist.txt', 'r') as f:
         whitelist = {normalize_name(line.strip()) for line in f if line.strip()}
     
+    # Read no_pay list (guests who don't have to pay)
+    with open('no_pay.txt', 'r') as f:
+        no_pay = {normalize_name(line.strip()) for line in f if line.strip()}
+    
     # Initialize lists
     blacklist = []
     guest_structure = defaultdict(list)  # main guest normalized -> list of plus ones
@@ -176,7 +180,9 @@ def main():
                     break
         
         if not has_payment:
-            definitely_not_paid.append(unpaid_guest)
+            # Check if guest is on no_pay list - if so, skip them
+            if unpaid_normalized not in no_pay:
+                definitely_not_paid.append(unpaid_guest)
     
     # Display results
     print("=" * 60)
