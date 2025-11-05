@@ -73,7 +73,7 @@ def main():
     all_guests = {}  # Store all guests: normalized -> actual name (for lookup)
     
     # Read CSV and process guests
-    with open('ICCHalloweenParty_10-29_guests.csv', 'r') as f:
+    with open('ICCHalloweenParty_10-31_guests.csv', 'r') as f:
         reader = csv.DictReader(f)
         
         for row in reader:
